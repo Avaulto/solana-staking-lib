@@ -15,14 +15,16 @@ import toast, { Toaster } from 'react-hot-toast';
 import { Notification } from './Notification';
 import './StakeSol.css'
 interface walletProps {
-    closeConnection?: boolean;
+    network: string;
+    voteAddress: string;
+    validatorName: string;
 }
 export const StakeSol = (props?: walletProps) => {
     const { connection } = useConnection();
 
     const { publicKey, connected, disconnecting, signTransaction, wallets } = useWallet();
     const [balance, setbalance]: any = useState(0)
-    const voteAccountPK: string | any = process.env.REACT_APP_VOTE_ADDRESS;
+    const voteAccountPK: string | any = props?.voteAddress;
     useEffect(() => {
 
         if (connected) {

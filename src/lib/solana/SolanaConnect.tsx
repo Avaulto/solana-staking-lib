@@ -24,12 +24,14 @@ import { Notification } from './Notification';
 // Default styles that can be overridden by your app
 require('@solana/wallet-adapter-react-ui/styles.css');
 interface walletProps {
-    closeConnection?: boolean;
+    network: string;
+    voteAddress: string;
+    validatorName: string;
 }
 
 const Wallet = (props?: walletProps) => {
     // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
-    const network: string | any = process.env.REACT_APP_NETWORK;
+    const network: string | any = props?.network;
 
     // You can also provide a custom RPC endpoint
     const endpoint = useMemo(() => clusterApiUrl(network), [network]);
@@ -64,7 +66,7 @@ const Wallet = (props?: walletProps) => {
                 <WalletModalProvider >
                     <WalletMultiButton style={{  }} />
                     {/* <WalletDisconnectButton /> */}
-                    <StakeSol />
+                    <StakeSol  network={props?.network || ''} voteAddress={props?.voteAddress || ''} validatorName={props?.validatorName || ''}/>
                 </WalletModalProvider>
                 <Toaster position="bottom-left" reverseOrder={false} />
             </WalletProvider>
