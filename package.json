@@ -1,7 +1,7 @@
 {
   "name": "solana-staking-lib",
   "description": "this lib allow validators to easily integrate in-app staking for their users",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "avaulto validator nodes",
   "main": "dist/index.js",
   "module": "dist/index.js",
