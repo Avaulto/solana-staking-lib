@@ -13,11 +13,12 @@
     color: black;
 }
 .wallet-notification-success{
-  background-color: rgb(21, 232, 21);
+  border: 1px solid #4e44ce;
 }
 .wallet-notification-error{
-  background-color: rgb(240, 74, 74);
+  border: 1px solid rgb(240, 74, 74);
 }
 .wallet-notification-info{
-  background-color: orange;
+
+  border: 1px solid orange;
 }

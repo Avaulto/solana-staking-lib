@@ -20,7 +20,7 @@ interface walletProps {
 export const StakeSol = (props?: walletProps) => {
     const { connection } = useConnection();
 
-    const { publicKey, connected, disconnect, signTransaction, wallets } = useWallet();
+    const { publicKey, connected, disconnecting, signTransaction, wallets } = useWallet();
     const [balance, setbalance]: any = useState(0)
     const voteAccountPK: string | any = process.env.REACT_APP_VOTE_ADDRESS;
     useEffect(() => {
@@ -32,6 +32,8 @@ export const StakeSol = (props?: walletProps) => {
                 setbalance(balance)
             }
             );
+        }if(disconnecting){
+            onMsg('wallet disconnected', 'error')
         }
     }, [connected])
 
@@ -92,14 +94,13 @@ export const StakeSol = (props?: walletProps) => {
             })
         } catch (error) {
             console.log(error)
-            console.log(new PublicKey(voteAccountPK))
         }
 
     }
     const sendTx = async (txParam: TransactionInstruction[] | Transaction[], extraSigners?: Keypair[]) => {
         setisLoading(true)
         try {
-            const { blockhash } = await connection.getRecentBlockhash('max');
+            const { blockhash } = await connection.getRecentBlockhash('recent');
             let transaction: Transaction = new Transaction({ feePayer: publicKey, recentBlockhash: blockhash }).add(...txParam);
             transaction = await signTransaction(transaction);
             //LMT: add extra signers (fix create-token-account problem)
@@ -114,7 +115,7 @@ export const StakeSol = (props?: walletProps) => {
             const rawTransaction = transaction.serialize({ requireAllSignatures: false });
             const txid = await connection.sendRawTransaction(rawTransaction);
             onMsg(`transaction: ${txid}`, 'info', () => { window.open(`https://explorer.solana.com/tx/${txid}?cluster=${process.env.REACT_APP_NETWORK}`) })
-            await connection.confirmTransaction(txid, 'max');
+            await connection.confirmTransaction(txid, 'confirmed');
             onMsg('transaction finish', 'success')
 
         } catch (error) {
@@ -132,7 +133,7 @@ export const StakeSol = (props?: walletProps) => {
                 variant={type}
                 fn={fn}
             />,
-            { duration: 5000 }
+            { duration: 3000 }
         )
     }
 
@@ -146,10 +147,9 @@ export const StakeSol = (props?: walletProps) => {
                     Stake
                 </button>
             </div>
-            <div id='wallet-balance'>balance: {balance} SOL</div>
+            <div id='wallet-balance'>balance: {balance.toFixed(3)} SOL</div>
             <p>
-                clicked on the Stake button will create a new stake account with allocated SOLs & delegate those SOLs to Avaulto secured node
-            </p>
+            Click on the Stake button will generate a new stake account with the submitted allocated SOLs & delegate those SOLs to {process.env.REACT_APP_VALIDATOR_NAME} secured node            </p>
         </form>}
     </span>
     );

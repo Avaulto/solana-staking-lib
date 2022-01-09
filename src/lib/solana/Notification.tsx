@@ -15,5 +15,15 @@ export const Notification: FC<NotificationProps> = ({ message, variant,fn }) => 
             fn()
         }
     }
-    return <div onClick={ () => triggerFn(fn)} className={`wallet-notification wallet-notification-${variant}`}>{message}</div>;
+    return <div style={{textDecoration: fn ? 'underline' : '',
+                        cursor: fn ? 'pointer' : '',
+                        color: fn ? 'blue' :'',
+                        textTransform: 'capitalize'
+                        }}
+                         onClick={ () => triggerFn(fn)} 
+    className={`wallet-notification wallet-notification-${variant}`}>
+        
+       {fn != null && 'view transaction on explorer' } 
+       {fn == null && message}
+        </div>;
 };
