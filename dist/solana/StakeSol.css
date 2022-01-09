@@ -1,0 +1,54 @@
+#delegate-form {
+    width: 100%;
+}
+#input-group {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+}
+#delegate-form input{
+    width: 300px;
+    height: 36px;
+    border-radius: 4px;
+    flex: 6;
+    text-align: center;
+}
+
+#delegate-form button{
+    background: black;
+    color: white;
+    height: 42px;
+    border: 0;
+    border-radius: 4px;
+    padding: 0px 30px;
+    flex: 1;
+    margin: 0 5px;
+    cursor: pointer;
+}
+#delegate-form button:hover{
+background-color: white;
+border: 1px solid black;
+color: black;
+}
+
+#delegate-form button:disabled{
+    opacity: 0.6;
+}
+#delegate-form button:disabled:hover{
+    background: black;
+    color: white;
+    border:none;
+}
+#delegate-form p{
+    border: 1px solid #4e44ce; 
+    border-radius: 4px ;
+    color: #4e44ce;
+    padding: 10px ;
+    font-size: 14px;
+    margin-top: 38px ;
+}
+
+#wallet-balance{
+    display: block;
+    text-transform: capitalize;
+}

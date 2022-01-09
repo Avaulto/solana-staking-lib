@@ -4,13 +4,14 @@
   "version": "0.1.0",
   "author": "avaulto validator nodes",
   "main": "dist/index.js",
-"module": "dist/index.js",
+  "module": "dist/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/avaulto/solana-staking-lib"
   },
   "private": true,
   "dependencies": {
+    "@babel/polyfill": "^7.12.1",
     "@project-serum/sol-wallet-adapter": "^0.2.6",
     "@solana/wallet-adapter-base": "^0.7.0",
     "@solana/wallet-adapter-react": "^0.13.1",
@@ -29,7 +30,7 @@
     "react-bootstrap": "^2.0.2",
     "react-dom": "^17.0.2",
     "react-hot-toast": "^2.1.1",
-    "react-scripts": "4.0.3",
+    "react-scripts": "^5.0.0",
     "react-toastify": "^8.1.0",
     "reactjs-popup": "^2.0.5",
     "typescript": "^4.4.3",
@@ -60,6 +61,9 @@
     ]
   },
   "devDependencies": {
+    "@babel/cli": "^7.16.7",
+    "@babel/core": "^7.16.7",
+    "@babel/preset-env": "^7.16.7",
     "@types/react-lottie": "^1.2.6"
   }
 }
