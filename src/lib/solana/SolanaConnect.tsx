@@ -10,7 +10,6 @@ import {
     getSolletWallet,
     getTorusWallet,
 } from '@solana/wallet-adapter-wallets';
-import logo from '../../assets/imgs/logo.svg'
 import toast, { Toaster } from 'react-hot-toast';
 import {
     WalletModalProvider,
@@ -27,14 +26,10 @@ require('@solana/wallet-adapter-react-ui/styles.css');
 interface walletProps {
     closeConnection?: boolean;
 }
-export const modallogo: FC = () => {
-    return <img src={logo}/>;
-};
+
 const Wallet = (props?: walletProps) => {
     // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
-    const network = WalletAdapterNetwork.Mainnet;
-
-    const {  disconnect } = useWallet();
+    const network: string | any = process.env.REACT_APP_NETWORK;
 
     // You can also provide a custom RPC endpoint
     const endpoint = useMemo(() => clusterApiUrl(network), [network]);
@@ -67,9 +62,9 @@ const Wallet = (props?: walletProps) => {
         <ConnectionProvider endpoint={endpoint}>
             <WalletProvider wallets={wallets} onError={onError} autoConnect>
                 <WalletModalProvider >
-                    <WalletMultiButton style={{ background: 'black', width: '100%' }} />
+                    <WalletMultiButton style={{  }} />
                     {/* <WalletDisconnectButton /> */}
-                    <StakeSol closeConnection={props?.closeConnection} />
+                    <StakeSol />
                 </WalletModalProvider>
                 <Toaster position="bottom-left" reverseOrder={false} />
             </WalletProvider>

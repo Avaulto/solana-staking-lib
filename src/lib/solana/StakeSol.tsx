@@ -4,6 +4,7 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import {
     Authorized, Keypair,
     Lockup, PublicKey,
+    LAMPORTS_PER_SOL,
     sendAndConfirmRawTransaction, sendAndConfirmTransaction,
     StakeProgram, SystemProgram, Transaction,
     TransactionInstruction, AccountBalancePair, DelegateStakeParams, CreateStakeAccountParams
@@ -19,22 +20,21 @@ interface walletProps {
 export const StakeSol = (props?: walletProps) => {
     const { connection } = useConnection();
 
-    const { publicKey, connected, disconnect, signTransaction } = useWallet();
-
+    const { publicKey, connected, disconnect, signTransaction, wallets } = useWallet();
+    const [balance, setbalance]: any = useState(0)
+    const voteAccountPK: string | any = process.env.REACT_APP_VOTE_ADDRESS;
     useEffect(() => {
 
         if (connected) {
             onMsg('wallet connected', 'success')
+            connection.getBalance(publicKey).then(r => {
+                const balance = r / 1000000000;
+                setbalance(balance)
+            }
+            );
         }
-        if (!props?.closeConnection) {
-            disconnect()
-            // onMsg('wallet disconnected', 'error')
+    }, [connected])
 
-        }
-    }, [connected, props?.closeConnection])
-
-    const TDS_avaultoVoteAccount = '87QuuzX6cCuWcKQUFZFm7vP9uJ72ayQD5nr6ycwWYWBG';
-    const mb_avaultoVoteAccount = '7K8DVxtNJGnMtUY1CQJT5jcs8sFGSZTDiG7kowvFpECh'
     const verifyBalance = async (amountToSend: number, walletPubkey: PublicKey) => {
         const balance = await connection.getBalance(walletPubkey);
         const { blockhash } = await connection.getRecentBlockhash('max');
@@ -49,6 +49,7 @@ export const StakeSol = (props?: walletProps) => {
     }
 
     const createStakeAccount = async (sol: number) => {
+
         const solToLamport = sol * 1000000000;
         const isValid = await verifyBalance(solToLamport, publicKey);
         if (isValid) {
@@ -82,7 +83,7 @@ export const StakeSol = (props?: walletProps) => {
                 const instruction: DelegateStakeParams = {
                     stakePubkey: stakeAcc.publicKey,
                     authorizedPubkey: new PublicKey(publicKey),
-                    votePubkey: new PublicKey(mb_avaultoVoteAccount)
+                    votePubkey: new PublicKey(voteAccountPK)
                 }
                 const stakeAccIns: any = r?.newStakeAccountIns;
                 const stake: Transaction[] = [stakeAccIns, StakeProgram.delegate(instruction)]
@@ -91,10 +92,11 @@ export const StakeSol = (props?: walletProps) => {
             })
         } catch (error) {
             console.log(error)
+            console.log(new PublicKey(voteAccountPK))
         }
 
     }
-    const sendTx= async (txParam: TransactionInstruction[] | Transaction[], extraSigners?: Keypair[]) => {
+    const sendTx = async (txParam: TransactionInstruction[] | Transaction[], extraSigners?: Keypair[]) => {
         setisLoading(true)
         try {
             const { blockhash } = await connection.getRecentBlockhash('max');
@@ -111,7 +113,7 @@ export const StakeSol = (props?: walletProps) => {
 
             const rawTransaction = transaction.serialize({ requireAllSignatures: false });
             const txid = await connection.sendRawTransaction(rawTransaction);
-            onMsg(`transaction: ${txid}`, 'info', () => { window.open('https://explorer.solana.com/tx/' + txid) })
+            onMsg(`transaction: ${txid}`, 'info', () => { window.open(`https://explorer.solana.com/tx/${txid}?cluster=${process.env.REACT_APP_NETWORK}`) })
             await connection.confirmTransaction(txid, 'max');
             onMsg('transaction finish', 'success')
 
@@ -123,17 +125,18 @@ export const StakeSol = (props?: walletProps) => {
 
     const [amount, setamount] = useState(0);
     const [isLoading, setisLoading] = useState(false)
-    const onMsg = (msg: any, type: any, fn?:any) => {
-            toast.custom(
-                <Notification
-                    message={msg}
-                    variant={type}
-                    fn={fn}
-                />,
-                { duration: 5000 }
-            )
-        }
-    
+    const onMsg = (msg: any, type: any, fn?: any) => {
+        toast.custom(
+            <Notification
+                message={msg}
+                variant={type}
+                fn={fn}
+            />,
+            { duration: 5000 }
+        )
+    }
+
+
 
     return (<span id='delegate-form'>
         {connected && <form>
@@ -143,6 +146,7 @@ export const StakeSol = (props?: walletProps) => {
                     Stake
                 </button>
             </div>
+            <div id='wallet-balance'>balance: {balance} SOL</div>
             <p>
                 clicked on the Stake button will create a new stake account with allocated SOLs & delegate those SOLs to Avaulto secured node
             </p>
