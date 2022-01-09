@@ -142,7 +142,7 @@ export const StakeSol = (props?: walletProps) => {
     return (<span id='delegate-form'>
         {connected && <form>
             <div id='input-group'>
-                <input type='number' placeholder='amount of sol' onChange={(e) => { setamount(Number(e.target.value)) }} />
+                <input type='number' min={0} placeholder='amount of sol' onChange={(e) => { setamount(Number(e.target.value)) }} />
                 <button type='button' onClick={delegate} disabled={!publicKey || amount == 0 || isLoading}>
                     Stake
                 </button>
